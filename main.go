@@ -13,7 +13,7 @@ func main() {
 	config.ConnectDatabase()
 	r := mux.NewRouter()
 	r.HandleFunc("/api/generate_ticket", handlers.GenerateTicket).Methods("GET")
-	r.HandleFunc("/api/games", handlers.GetAllTickets).Methods("GET")
+	r.HandleFunc("/api/tickets", handlers.GetAllTickets).Methods("GET")
 	port := "8080"
 	log.Printf("Server listening on :%s...\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, r))

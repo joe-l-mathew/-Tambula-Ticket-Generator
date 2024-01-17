@@ -1,12 +1,6 @@
 package functions
 
-import (
-	"fmt"
-	"time"
-)
-
 func GenerateTicket() [][][]int {
-	startTime := time.Now()
 	cardCount, rows, columns, elementCount := 6, 3, 9, 90
 
 	initialSlice := make([][][]int, cardCount)
@@ -31,6 +25,5 @@ func GenerateTicket() [][][]int {
 		}
 	}
 	SortResult(initialSlice)
-	fmt.Println(time.Since(startTime))
 	return initialSlice
 }
