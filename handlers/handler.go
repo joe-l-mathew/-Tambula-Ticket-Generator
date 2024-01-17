@@ -7,6 +7,7 @@ import (
 	"joe-l-mathew/Tambula-Ticket-Generator/functions"
 	"joe-l-mathew/Tambula-Ticket-Generator/models"
 	"net/http"
+	"sort"
 	"strconv"
 )
 
@@ -26,6 +27,11 @@ func GenerateTicket(w http.ResponseWriter, r *http.Request) {
 		tickets = append(tickets, models.Ticket{MatrixData: stringMatrix})
 	}
 
+	// Sort tickets by TicketID
+	sort.Slice(tickets, func(i, j int) bool {
+		return tickets[i].ID < tickets[j].ID
+	})
+
 	// Add tickets to the database
 	game := models.Game{
 		Tickets: tickets,
@@ -36,6 +42,7 @@ func GenerateTicket(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	response := map[string]interface{}{
 		"tickets": make(map[string][][]int),
 	}
@@ -52,6 +59,7 @@ func GenerateTicket(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 }
 
 func GetAllTickets(w http.ResponseWriter, r *http.Request) {
