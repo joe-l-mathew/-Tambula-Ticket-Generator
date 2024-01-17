@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Game struct {
 	gorm.Model
-	Tickets []Ticket `gorm:"foreignKey:GameID"` // One-to-many relationship with tickets
+	Tickets []Ticket `gorm:"foreignKey:GameID"`
 }
 
 type Ticket struct {
@@ -12,4 +12,3 @@ type Ticket struct {
 	GameID     uint `gorm:"index"`
 	MatrixData string
 }
-

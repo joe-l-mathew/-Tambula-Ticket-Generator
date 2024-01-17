@@ -1,18 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"joe-l-mathew/Tambula-Ticket-Generator/config"
-	"joe-l-mathew/Tambula-Ticket-Generator/functions"
+	"joe-l-mathew/Tambula-Ticket-Generator/handlers"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
 	config.ConnectDatabase()
-	generatedTickets := functions.GenerateTicket()
-	for _, v := range generatedTickets {
-		for _, v2 := range v {
-			fmt.Println(v2)
-		}
-		fmt.Println("*******************")
-	}
+	r := mux.NewRouter()
+	r.HandleFunc("/api/generate_ticket", handlers.GenerateTicket).Methods("GET")
+	port := "8080"
+	log.Printf("Server listening on :%s...\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
