@@ -23,27 +23,39 @@ func PlaceElement(elementCount int, cardCount int, initialSlice [][][]int) bool 
 					}
 				}
 
-				if numberOfColumsFilled < 2 {
-					for _, val := range initialSlice[cardIndex][rowIndex] {
-						if val != 0 {
-							numberOfRowElementsFilled++
-						}
-
+				for _, val := range initialSlice[cardIndex][rowIndex] {
+					if val != 0 {
+						numberOfRowElementsFilled++
 					}
-					if numberOfRowElementsFilled < 5 && (numberOfRowElementsFilled <= (columnIndex-1) || columnIndex < 2) {
 
-						initialSlice[cardIndex][rowIndex][columnIndex] = i
-						valuePlaced = true
+				}
+				if numberOfRowElementsFilled < 5 && (numberOfRowElementsFilled <= (columnIndex-1) || columnIndex < 2) {
 
-					} else {
-						iterationCount++
-					}
+					initialSlice[cardIndex][rowIndex][columnIndex] = i
+					valuePlaced = true
+
+				} else {
+					iterationCount++
 				}
 
 			}
 
 		}
 
+	}
+	for count := 0; count < 9; count++ {
+		for _, individualCard := range initialSlice {
+			var zeroCount int = 0
+			for _, rowElement := range individualCard {
+				if rowElement[count] == 0 {
+					zeroCount++
+				}
+			}
+			if zeroCount == 3 {
+				return false
+			}
+
+		}
 	}
 
 	return true
