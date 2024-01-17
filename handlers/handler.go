@@ -7,6 +7,7 @@ import (
 	"joe-l-mathew/Tambula-Ticket-Generator/functions"
 	"joe-l-mathew/Tambula-Ticket-Generator/models"
 	"net/http"
+	"strconv"
 )
 
 func GenerateTicket(w http.ResponseWriter, r *http.Request) {
@@ -31,20 +32,57 @@ func GenerateTicket(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := config.DB.Save(&game).Error; err != nil {
-		// Handle the error, for example, log it
 		fmt.Println("Error saving game to the database:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
 	response := map[string]interface{}{
-		"ticket": game,
+		"tickets": make(map[string][][]int),
+	}
+
+	for _, ticket := range tickets {
+		matrix, _ := functions.StringToMatrix(ticket.MatrixData)
+		response["tickets"].(map[string][][]int)[fmt.Sprintf("%d", ticket.ID)] = matrix
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(response); err != nil {
-		// Handle the error, for example, log it
+		fmt.Println("Error encoding json response:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func GetAllTickets(w http.ResponseWriter, r *http.Request) {
+	pageStr := r.URL.Query().Get("page")
+	itemsPerPageStr := r.URL.Query().Get("itemsPerPage")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		page = 1
+	}
+	itemsPerPage, err := strconv.Atoi(itemsPerPageStr)
+	if err != nil || itemsPerPage < 1 {
+		itemsPerPage = 10
+	}
+
+	offset := (page - 1) * itemsPerPage
+	var games []models.Game
+	result := config.DB.Preload("Tickets").Limit(itemsPerPage).Offset(offset).Find(&games)
+	if result.Error != nil {
+		fmt.Println("Error retrieving games with tickets:", result.Error)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{
+		"games": games,
+		"page":  page,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		fmt.Println("Error encoding JSON response:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
