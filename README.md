@@ -1,6 +1,6 @@
-# Ticket Generation System
+ # Ticket Generation System
 
-A simple Go backend application for generating and managing tickets.
+A simple Go backend application for generating and managing Tambula tickets.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
